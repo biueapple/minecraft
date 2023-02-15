@@ -7,7 +7,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private PlayerInven playerInven;
-    private int invenHotkey;
+    private PlayerMouse playerMouse;
+
 
     private bool isReady;
     
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         playerInven = GetComponent<PlayerInven>();
+        playerMouse = GetComponent<PlayerMouse>();  
 
         cam = Camera.main;
 
@@ -58,21 +60,25 @@ public class Player : MonoBehaviour
             CenterRay();
             HotketInput();
             RightClickDown();
+            LeftClick();
         }
 
     }
     
     public void LeftClick()
     {
-        if(Input.GetMouseButton(1))
+        if(Input.GetMouseButton(0) && playerMouse.isMove)
         {
-
+            if(decryption.block != null)
+            {
+                decryption.block.Mining(playerInven.GetHotkeyBox().GetItem());
+            }
         }
     }
 
     public void RightClickDown()
     {
-        if(Input.GetMouseButtonDown(1))
+        if(Input.GetMouseButtonDown(1) && playerMouse.isMove)
         {
             playerInven.RightClickHotkey(this, decryption);
         }

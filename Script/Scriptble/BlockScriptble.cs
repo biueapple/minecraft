@@ -13,20 +13,6 @@ public class BlockScriptble : ScriptableObject
     }
 
     //
-    [SerializeField]
-    private int strength;       //강도
-    public int GetStrength()
-    {
-        return strength;
-    }
 
-    private float durability;               //강도보다 낮으면 상승하지 않고 강도보다 높아지면 파괴
-    public float GetDurability()
-    {
-        return durability;
-    }
-    public void SetDurabillity(float f)
-    {
-        durability = f;
-    }
+    
 }

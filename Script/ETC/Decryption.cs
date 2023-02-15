@@ -116,6 +116,7 @@ public class Decryption : MonoBehaviour
 
     public void Init()
     {
+
         Obj = null;
         large_Frame = _LARGE_FRAME.NONE;
         small_Frame = _SMALL_FRAME.NONE;

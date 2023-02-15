@@ -36,7 +36,6 @@ public class PlayerInven : MonoBehaviour
         hand = inventoryItem[hotkey];
     }
 
-
     public void RightClickHotkey(Player player, Decryption decryption)
     {
         if(inventoryItem[hotkey].GetItem() != null)

@@ -13,6 +13,6 @@ public class StoneBlock : Block
     // Update is called once per frame
     void Update()
     {
-        
+        Repetition();
     }
 }

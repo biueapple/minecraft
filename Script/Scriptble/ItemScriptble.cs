@@ -33,7 +33,15 @@ public class ItemScriptble : ScriptableObject
 
     //
 
-    
+    [SerializeField]
+    private int strength;       //°­µµ
+    public int GetStrength()
+    {
+        return strength;
+    }
+
+    //
+
     //[SerializeField]
     //private int craftValue;
     //public int GetCraftValue()

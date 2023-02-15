@@ -11,15 +11,51 @@ public class Block : MonoBehaviour
 
     public bool isVisible;
 
-    void Start()
+
+
+    private float durability;               //강도보다 낮으면 상승하지 않고 강도보다 높아지면 파괴
+    public float GetDurability()
     {
-        
+        return durability;
+    }
+    public void SetDurabillity(float f)
+    {
+        durability = f;
     }
 
+    //
 
-    void Update()
+    public void Flow()
     {
-           
+        if (durability > 0f)
+        {
+            durability -= Time.deltaTime;
+        }
+    }
+
+    public void Repetition()
+    {
+        Flow();
+        if(durability >= itemScriptble.GetStrength())
+        {
+            FindObjectOfType<TopographyParent>().BrokenBlock((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+            Destruction();
+        }
+    }
+
+    public void Mining(Item item)
+    {
+        if (item == null)
+        {
+            if (1 >= itemScriptble.GetStrength())
+            {
+                durability = (durability + (1 + 1) * Time.deltaTime);
+            }
+        }
+        else if(item.scriptble.GetStrength() >= itemScriptble.GetStrength())
+        {
+            durability = (durability + (1 + item.scriptble.GetStrength()) * Time.deltaTime);
+        }
     }
 
     public void ApplyTexture()

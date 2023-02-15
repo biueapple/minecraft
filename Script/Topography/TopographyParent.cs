@@ -51,7 +51,7 @@ public class TopographyParent : MonoBehaviour
         isStart = true;
     }
 
-    public void CreateTopo()
+    private void CreateTopo()
     {
         for(int i = -topoSize; i < topoSize; i++)
         {
@@ -64,7 +64,7 @@ public class TopographyParent : MonoBehaviour
         }
     }
 
-    public void FindPlayerPosition()
+    private void FindPlayerPosition()
     {
         if (players[0] != null)
         {
@@ -83,11 +83,11 @@ public class TopographyParent : MonoBehaviour
         }
     }
 
-    public int playerXF()
+    private int playerXF()
     {
         return DownNum(players[0].transform.position.x / blockSizeX);
     }
-    public int playerZF()
+    private int playerZF()
     {
         return DownNum(players[0].transform.position.z / blockSizeZ);
     }
@@ -131,7 +131,7 @@ public class TopographyParent : MonoBehaviour
         VisibleNearBlock(x, y, z);
     }
 
-    public void VisibleNearBlock(int x,int y,int z)
+    private void VisibleNearBlock(int x,int y,int z)
     {
         for (int i = -1; i < 2; i++)
         {
@@ -163,7 +163,7 @@ public class TopographyParent : MonoBehaviour
         }
     }
 
-    public void InvisibleNearTopo(int x, int z)
+    private void InvisibleNearTopo(int x, int z)
     {
         for (int i = -1; i < 2; i++)
         {
@@ -182,7 +182,7 @@ public class TopographyParent : MonoBehaviour
         }
     }
 
-    public void VisibleNearTopo(int x,int z)
+    private void VisibleNearTopo(int x,int z)
     {
         for (int i = -1; i < 2; i++)
         {
