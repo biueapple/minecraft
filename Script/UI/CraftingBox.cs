@@ -39,6 +39,7 @@ public class CraftingBox : MonoBehaviour
 
     public void Comparison()
     {
+        // 아이템 code 한자리수 int로 변환하는 과정
         int[] recipe = new int[Boxes.Length];
         List<_ITEMCODE> list = new List<_ITEMCODE>();
         for(int i = 0; i < Boxes.Length; i++)
@@ -67,7 +68,9 @@ public class CraftingBox : MonoBehaviour
                 }
             }
         }
+        //
 
+        //Combination에서 allRecipe 하나하나 비교하면서 찾는중
         for(int i = 0; i < Combination.allRecipes.Count; i++)
         {
             if (Combination.allRecipes[i].Comparison(Combination.Cutting(recipe), list))
@@ -88,15 +91,11 @@ public class CraftingBox : MonoBehaviour
                 result.SetItemList(null);
             }
         }
+        //
+
+
     }
 
 
-    //public ItemBox GetLastClickBox()
-    //{
-    //    return lastClickBox;
-    //}
-    //public void SetLastClickBox(ItemBox box)
-    //{
-    //    lastClickBox = box;
-    //}
+
 }

@@ -13,7 +13,7 @@ public class Block : MonoBehaviour
 
 
 
-    private float durability;               //강도보다 낮으면 상승하지 않고 강도보다 높아지면 파괴
+    public float durability;               //강도보다 낮으면 상승하지 않고 강도보다 높아지면 파괴
     public float GetDurability()
     {
         return durability;
@@ -25,22 +25,14 @@ public class Block : MonoBehaviour
 
     //
 
-    public void Flow()
-    {
-        if (durability > 0f)
-        {
-            durability -= Time.deltaTime;
-        }
-    }
-
     public void Repetition()
     {
-        Flow();
-        if(durability >= itemScriptble.GetStrength())
-        {
-            FindObjectOfType<TopographyParent>().BrokenBlock((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
-            Destruction();
-        }
+        
+    }
+
+    public virtual void RightClick(Player player)
+    {
+        player.OpenCrafting_9x9();
     }
 
     public void Mining(Item item)
@@ -50,11 +42,19 @@ public class Block : MonoBehaviour
             if (1 >= itemScriptble.GetStrength())
             {
                 durability = (durability + (1 + 1) * Time.deltaTime);
+                GetComponent<Renderer>().material.SetFloat("_Float", durability * 1.2f - 0.6f);
             }
         }
         else if(item.scriptble.GetStrength() >= itemScriptble.GetStrength())
         {
             durability = (durability + (1 + item.scriptble.GetStrength()) * Time.deltaTime);
+            GetComponent<Renderer>().material.SetFloat("_Float", durability * 1.2f - 0.6f);
+        }
+
+        if (durability >= itemScriptble.GetStrength())
+        {
+            FindObjectOfType<TopographyParent>().BrokenBlock((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+            //Destruction(); topography.BrokenBlock()에서 호출해줌
         }
     }
 
@@ -80,5 +80,11 @@ public class Block : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
+    }
+
+    public virtual void Init()
+    {
+        durability = 0;
+        GetComponent<Renderer>().material.SetFloat("_Float", -0.6f);
     }
 }

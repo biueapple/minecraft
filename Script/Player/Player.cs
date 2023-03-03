@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 {
     private PlayerInven playerInven;
     private PlayerMouse playerMouse;
+    private UIController controller;
+
 
 
     private bool isReady;
@@ -33,7 +35,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         playerInven = GetComponent<PlayerInven>();
-        playerMouse = GetComponent<PlayerMouse>();  
+        playerMouse = GetComponent<PlayerMouse>();
+        controller = FindObjectOfType<UIController>();
 
         cam = Camera.main;
 
@@ -104,7 +107,10 @@ public class Player : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            decryption.DecryptionSetting(hit);
+            if(decryption.DecryptionSetting(hit))
+            {
+
+            }
         }
         else
         {
@@ -161,6 +167,20 @@ public class Player : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             playerInven.SetHotkey(8);
+        }
+    }
+
+    public void OpenCrafting_9x9()
+    {
+        controller.InventoryKey();
+        controller.CraftingKey(2);
+        if (controller.uiOpens.Count <= 0)
+        {
+            playerMouse.isMove = true;
+        }
+        else
+        {
+            playerMouse.isMove = false;
         }
     }
 }

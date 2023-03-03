@@ -50,7 +50,7 @@ public class UIController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.I))
         {
             InventoryKey();
-            CraftingKey();
+            CraftingKey(1);
             if(uiOpens.Count <= 0)
             {
                 playerMouse.isMove = true;
@@ -206,7 +206,7 @@ public class UIController : MonoBehaviour
             uiOpens.Add(inventory);
         }
     }
-    public void CraftingKey()
+    public void CraftingKey(int index)
     {
         if (uiOpens.Contains(crafting))
         {
@@ -218,13 +218,21 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            craftingBox = craftingBox_1x1;
+            if(index == 1)
+            {
+                craftingBox = craftingBox_1x1;
+            }
+            else if(index == 2)
+            {
+                craftingBox = craftingBox_9x9;
+            }
             crafting = craftingBox.gameObject;
 
             crafting.SetActive(true);
             uiOpens.Add(crafting);
         }
     }
+
 
     public T GetGraphicRay<T>()
     {

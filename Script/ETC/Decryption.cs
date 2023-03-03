@@ -46,18 +46,18 @@ public class Decryption : MonoBehaviour
 
     public Vector3 HitVec;
 
-    //private bool same;
+    private bool same;
 
-    public void DecryptionSetting(RaycastHit hit)
+    public bool DecryptionSetting(RaycastHit hit)
     {
-        //if(Obj == hit.transform.gameObject)
-        //{
-        //    same = true;
-        //}
-        //else
-        //{
-        //    same = false;
-        //}
+        if (Obj == hit.transform.gameObject)
+        {
+            same = true;
+        }
+        else
+        {
+            same = false;
+        }
 
         Init();
 
@@ -111,12 +111,17 @@ public class Decryption : MonoBehaviour
         //    }
         //}
 
-        //return same;
+        return same;
     }
 
     public void Init()
     {
+        if(block != null && !same)
+        {
+            block.Init();
+        }
 
+        same = false;
         Obj = null;
         large_Frame = _LARGE_FRAME.NONE;
         small_Frame = _SMALL_FRAME.NONE;

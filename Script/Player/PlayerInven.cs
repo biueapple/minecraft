@@ -36,6 +36,36 @@ public class PlayerInven : MonoBehaviour
         hand = inventoryItem[hotkey];
     }
 
+
+
+    public bool ItemInput(Item item)
+    {
+        for(int i = 0; i < inventoryItem.Length; i++)       //인벤토리에 같은 아이템이 있으면 거기에 넣기
+        {
+            if (inventoryItem[i].GetItem() != null)
+            {
+                if(inventoryItem[i].GetItem().scriptble.GetCode() == item.scriptble.GetCode())
+                {
+                    inventoryItem[i].OneIn(item);
+                    return true;
+                }
+            }
+        }
+
+        for (int i = 0; i < inventoryItem.Length; i++)      //인벤토리에 빈곳에 아이템 넣기
+        {
+            if (inventoryItem[i].GetItem() == null)
+            {
+                inventoryItem[i].OneIn(item);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
     public void RightClickHotkey(Player player, Decryption decryption)
     {
         if(inventoryItem[hotkey].GetItem() != null)

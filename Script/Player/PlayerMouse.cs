@@ -15,6 +15,8 @@ public class PlayerMouse : MonoBehaviour
     public float mouse_Vertical_Sensitive;
     public bool isMove;
 
+    public Transform handTf;
+
     public void Init(Transform _transform, Camera camera, Transform head)
     {
         tf = _transform;
@@ -22,6 +24,10 @@ public class PlayerMouse : MonoBehaviour
         cam.transform.SetParent(head, false);
         cam.transform.localPosition = Vector3.zero;
         isMove = true;
+        
+        handTf.transform.SetParent(cam.transform, false);
+        handTf.transform.localEulerAngles = Vector3.zero;
+        handTf.transform.localPosition = new Vector3(0.397f, -0.206f, 0.377f);
     }
 
     public void Repetition()

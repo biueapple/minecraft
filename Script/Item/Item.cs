@@ -6,7 +6,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public ItemScriptble scriptble;
-    public BlockScriptble blockScriptble;
+    //public BlockScriptble blockScriptble;
 
     private void Start()
     {
@@ -37,4 +37,14 @@ public class Item : MonoBehaviour
         }
         return true;
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.transform.GetComponent<PlayerInven>() != null)
+        {
+            collision.transform.GetComponent<PlayerInven>().ItemInput(this);
+        }
+    }
+
+
 }
