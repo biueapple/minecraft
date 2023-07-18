@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class SkillTree : MonoBehaviour
 {
-    public SkillManager manager;
     public List<SkillView> SkillViews = new List<SkillView>();
     public List<Line> lines = new List<Line>();
     public Line line;
+    private CharacterSkills skill;
+
+    public void Init(CharacterSkills skills)
+    {
+        skill = skills;
+        for(int i = 0; i < SkillViews.Count; i++)
+        {
+            SkillViews[i].Init(skill);
+        }
+    }
+
+
+
+
+
 
     public void AddSkillView(SkillView view)
     {

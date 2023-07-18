@@ -17,12 +17,10 @@ public class FluidBlock : Block
         return volume;
     }
 
-    public override void Init()
+    public override Block Init()
     {
         GetComponent<Renderer>().material.SetFloat("_Float", volume);
-        //colliderµµ ¹Ù²ã¾ßÇÔ
-        //GetComponent<BoxCollider>().center = new Vector3 (0, volume * 0.5f, 0);
-        //GetComponent<BoxCollider>().size = new Vector3(1, volume, 1);
+        return base.Init();
     }
 
     /// <summary>

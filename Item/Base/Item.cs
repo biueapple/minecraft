@@ -1,14 +1,13 @@
+using System;
+using System.Collections;
 using UnityEngine;
+
 
 [System.Serializable]
 public class Item : MonoBehaviour
 {
+    protected Unit unit;
     public ItemScriptble scriptble;
-
-    private void Start()
-    {
-        
-    }
 
     /// <summary>
     /// 아이템이 드롭될때 호출
@@ -17,23 +16,13 @@ public class Item : MonoBehaviour
     public virtual void Drop(Vector3 position)
     {
         DropItemManager manager = FindObjectOfType<DropItemManager>();
+        gameObject.SetActive(true);
         transform.SetParent(manager.transform, false);
         transform.position = position;
         manager.DropItem(this);
+        CollisionCreation();
         GetComponent<Rigidbody>().AddForce(Vector3.up * 100f);
     }
-
-    /// <summary>
-    /// 나중에 우클릭으로 효과를 만들때 override
-    /// </summary>
-    /// <param name="player">누가</param>
-    /// <param name="decryption">정보</param>
-    /// <returns></returns>
-    public virtual bool RightClick(Player player, Decryption decryption)
-    {
-        return false;
-    }
-
 
     /// <summary>
     /// 아이템을 블록으로 설치할때 다른 무언가가 거기 있다면 설치가 불가능한 상태
@@ -56,11 +45,19 @@ public class Item : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.GetComponent<PlayerInven>() != null)
+        if(collision.transform.GetComponent<CharacterInven>() != null)
         {
-            FindObjectOfType<DropItemManager>().AcquiredItem(this);
-            collision.transform.GetComponent<PlayerInven>().ItemInput(this);
+            if(collision.transform.GetComponent<CharacterInven>().ItemAdd(this))
+            {
+                Acquired(collision.transform.GetComponent<Unit>());
+            }
         }
+    }
+
+    public void Acquired(Unit unit)
+    {
+        this.unit = unit;
+        FindObjectOfType<DropItemManager>().AcquiredItem(this);
     }
 
     public void CollisionRemoval()
@@ -79,6 +76,50 @@ public class Item : MonoBehaviour
             body.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
         } 
         if(GetComponent<Collider>() == null)
-            gameObject.AddComponent<Collider>();
+        {
+            gameObject.AddComponent<BoxCollider>();
+        }
     }
+
+    public void Throw(Vector3 posi, Vector3 dir, Action<Item> action)
+    {
+        if (GetComponent<Rigidbody>() == null || GetComponent<Collider>() == null) { CollisionCreation(); }
+        gameObject.GetComponent<Collider>().isTrigger = true;
+        transform.GetComponent<Rigidbody>().AddForce(dir * 300);
+        StartCoroutine(CollCheck(posi, dir, action));
+    }
+
+    private IEnumerator CollCheck(Vector3 posi, Vector3 dir, Action<Item> action)
+    {
+        bool one = false;
+        bool two = false;
+        transform.position = posi;
+        while (true)
+        {
+            yield return null;
+
+            if (Physics.Raycast(transform.position, dir, transform.localScale.z * 0.5f + 0.1f) && !one)
+            {
+                Vector3 v = transform.GetComponent<Rigidbody>().velocity;
+                transform.GetComponent<Rigidbody>().velocity = new Vector3(0, v.y, 0);
+                one = true;
+            }
+
+            if (Physics.Raycast(transform.position, Vector3.down, transform.localScale.y * 0.5f + 0.1f) && !two)
+            {
+                transform.GetComponent<Collider>().isTrigger = false;
+                Destroy(GetComponent<Rigidbody>());
+                one = true;
+                two = true;
+            }
+
+            if (one && two)
+            {
+                action(this);
+                break;
+            }
+        }
+    }
+
+    public virtual Item Init() { return this; }
 }

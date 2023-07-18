@@ -23,7 +23,7 @@ public class Skill : MonoBehaviour
         level--;
     }
 
-    public void ProjectiveSkill(Unit target, Action<Unit> action, float speed, Projective projective)
+    public void Projective_Skill(Unit target, Action<Unit> action, float speed, Projective projective)
     {
         projective.MoveToUnit(target, action, speed);
     }

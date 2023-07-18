@@ -19,10 +19,11 @@ public class SolidBlock : Block
     /// <summary>
     /// 초기화 durability를 0으로
     /// </summary>
-    public override void Init()
+    public override Block Init()
     {
         durability = 0;
         GetComponent<Renderer>().material.SetFloat("_Float", -0.6f);
+        return base.Init();
     }
 
 
@@ -37,14 +38,14 @@ public class SolidBlock : Block
             if (1 >= blockScriptble.GetStrength())
             {
                 durability = (durability + (1 + 1) * Time.deltaTime);
-                GetComponent<Renderer>().material.SetFloat("_Float", durability * 1.2f - 0.6f);
+                GetComponent<Renderer>().material.SetFloat("_Float", durability / blockScriptble.GetStrength() - 0.6f );
             }
         }
         else
         {
             //손에 뭘 들고있다면 장비인지 장비의 강도가 얼마인지 파악하고 해야하는데 아직 장비를 안만들었으니 
             durability = (durability + (1 + 1) * Time.deltaTime);
-            GetComponent<Renderer>().material.SetFloat("_Float", durability * 1.2f - 0.6f);
+            GetComponent<Renderer>().material.SetFloat("_Float", durability / blockScriptble.GetStrength() - 0.6f );
         }
         //else if (item.scriptble.GetStrength() >= itemScriptble.GetStrength())
         //{

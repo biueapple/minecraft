@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SkillView : MonoBehaviour
+public class SkillView : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    private CharacterSkills characterSkills;
     public Skill skill;
 
     public SkillView[] Next;
@@ -12,7 +14,14 @@ public class SkillView : MonoBehaviour
 
     private Button plus;
     private Button minus;
+    private Text text;
     public int condition;
+
+    public void Init(CharacterSkills skills)
+    {
+        characterSkills = skills;
+        text = transform.GetChild(2).GetComponent<Text>();
+    }
 
     public void ConditionCheck()
     {
@@ -31,6 +40,14 @@ public class SkillView : MonoBehaviour
 
     public void Lock()
     {
+        if(skill != null && skill.level != 0)
+        {
+            for(int i = 0; i < skill.level;)
+            {
+                LevelDownButton();
+            }
+        }
+
         GetComponent<Image>().color = Color.black;
         if(plus == null)
         {
@@ -43,8 +60,8 @@ public class SkillView : MonoBehaviour
         plus.gameObject.SetActive(false);
         minus.gameObject.SetActive(false);
 
-        plus.onClick.RemoveAllListeners();
-        minus.onClick.RemoveAllListeners();
+        //plus.onClick.RemoveAllListeners();
+        //minus.onClick.RemoveAllListeners();
     }
 
     public void Open()
@@ -64,40 +81,66 @@ public class SkillView : MonoBehaviour
         plus.gameObject.SetActive(true);
         minus.gameObject.SetActive(true);
 
-        plus.onClick.RemoveAllListeners();
-        minus.onClick.RemoveAllListeners();
+        //plus.onClick.RemoveAllListeners();
+        //minus.onClick.RemoveAllListeners();
 
-        plus.onClick.AddListener(skill.LevelUp);
-        minus.onClick.AddListener(skill.LevelDown);
+        //plus.onClick.AddListener(skill.LevelUp);
+        //minus.onClick.AddListener(skill.LevelDown);
 
-        for(int i = 0; i < Next.Length; i++)
-        {
-            plus.onClick.AddListener(Next[i].ConditionCheck);
-            minus.onClick.AddListener(Next[i].ConditionCheck);
-        }
+        //for(int i = 0; i < Next.Length; i++)
+        //{
+        //    plus.onClick.AddListener(Next[i].ConditionCheck);
+        //    minus.onClick.AddListener(Next[i].ConditionCheck);
+        //}
     }
 
 
     public void LevelUpButton()
     {
+        if (characterSkills != null)
+        {
+            if (characterSkills.point == 0)
+                return;
+            characterSkills.point--;
+        }
+            
         skill.LevelUp();
         for (int i = 0; i < Next.Length; i++)
         {
             Next[i].ConditionCheck();
         }
+        text.text = skill.level.ToString();
     }
 
     public void LevelDownButton()
     {
+        if (characterSkills != null)
+            characterSkills.point++;
+
         skill.LevelDown();
         for (int i = 0; i < Next.Length; i++)
         {
             Next[i].ConditionCheck();
         }
+        text.text = skill.level.ToString();
     }
 
     public void SetSprite()
     {
         GetComponent<Image>().sprite = skill.sp;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if(skill.level > 0)
+            FindObjectOfType<SkillUI>().MouseDownSkillV(this);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (eventData.pointerEnter != null && eventData.pointerEnter.GetComponent<SkillBox>() != null)
+            FindObjectOfType<SkillUI>().MouseUpSkillV(eventData.pointerEnter.GetComponent<SkillBox>());
+        else
+            FindObjectOfType<SkillUI>().MouseUpSkillV(null);
     }
 }

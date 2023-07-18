@@ -24,15 +24,15 @@ public class Editor_SkillView : Editor
             view.Open();
         }
 
-        if (GUILayout.Button("LevelUp"))
-        {
-            view.LevelUpButton();
-        }
+        //if (GUILayout.Button("LevelUp"))
+        //{
+        //    view.LevelUpButton();
+        //}
 
-        if (GUILayout.Button("LevelDown"))
-        {
-            view.LevelDownButton();
-        }
+        //if (GUILayout.Button("LevelDown"))
+        //{
+        //    view.LevelDownButton();
+        //}
 
         //EditorGUI.BeginChangeCheck();
         //if(EditorGUI.EndChangeCheck() )
@@ -46,7 +46,6 @@ public class Editor_SkillView : Editor
                 view.Lock();
             else
                 view.SetSprite();
-            Debug.Log("123");
         }
     }
 }

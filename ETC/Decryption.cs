@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum _LARGE_FRAME
@@ -45,6 +42,7 @@ public class Decryption : MonoBehaviour
     public Block block;
     public SolidBlock solidBlock;
     public FluidBlock fluidBlock;
+    public InterBlock interBlock;
     public Vector3 nomal;
     //public float Figure;             //수치(대미지나 다른)
 
@@ -52,7 +50,7 @@ public class Decryption : MonoBehaviour
 
     private bool same;
 
-    public bool DecryptionSetting(RaycastHit hit)
+    public bool DecryptionSetting(RaycastHit hit, Transform tf = null)
     {
         if (Obj == hit.transform.gameObject)
         {
@@ -67,8 +65,17 @@ public class Decryption : MonoBehaviour
 
         Obj = hit.transform.gameObject;
 
-        Distance = Vector3.Distance(transform.position, hit.transform.position);
-        HitDistance = Vector3.Distance(transform.position, hit.point);
+        if (tf != null)
+        {
+            Distance = Vector3.Distance(tf.position, hit.transform.position);
+            HitDistance = Vector3.Distance(tf.position, hit.point);
+        }
+        else
+        {
+            Distance = Vector3.Distance(transform.position, hit.transform.position);
+            HitDistance = Vector3.Distance(transform.position, hit.point);
+        }
+        
         nomal = hit.normal;
         HitVec = hit.point;
 
@@ -98,6 +105,10 @@ public class Decryption : MonoBehaviour
             {
                 fluidBlock = block.GetComponent<FluidBlock>();
             }
+            if (block.GetComponent<InterBlock>() != null)
+            {
+                interBlock = block.GetComponent<InterBlock>();
+            }
         }
 
         return same;
@@ -125,5 +136,6 @@ public class Decryption : MonoBehaviour
         block = null;
         solidBlock = null;
         fluidBlock = null;
+        interBlock = null;
     }
 }

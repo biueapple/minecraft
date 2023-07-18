@@ -11,10 +11,6 @@ public class Block : MonoBehaviour
 
     public bool isVisible;
 
-    public virtual void RightClick(Player player)
-    {
-        
-    }
 
     public Vector3Int GetPosition() { return new Vector3Int((int)transform.position.x, (int)transform.position.y, (int)transform.position.z); }
 
@@ -42,5 +38,5 @@ public class Block : MonoBehaviour
         }
     }
 
-    public virtual void Init() { }
+    public virtual Block Init() { return this; }
 }
