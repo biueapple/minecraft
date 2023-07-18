@@ -16,13 +16,15 @@ public class SkillManager : MonoBehaviour
 
     public Line linePrefab;
 
+    public SkillTree[] trees;
+    public UIManager manager;
+
 
     public void CreateSkillTree()
     {
         if(tree == null)
         {
             tree = Instantiate(treePrefab, canvas.transform);
-            tree.manager = this;
             tree.line = linePrefab;
         }
     }
@@ -53,4 +55,6 @@ public class SkillManager : MonoBehaviour
             tree.transform.SetParent(rect.GetComponent<ScrollRect>().content);
         }
     }
+
+   
 }

@@ -34,7 +34,7 @@ public class AddImages : MonoBehaviour
         {
             if (allItems[i].scriptble.GetCode() == code)
             {
-                return Instantiate(allItems[i]);
+                return Instantiate(allItems[i]).Init();
             }
         }
         return null;
@@ -46,7 +46,7 @@ public class AddImages : MonoBehaviour
         {
             if (allBlocks[i].itemScriptble.GetCode() == code)
             {
-                return Instantiate(allBlocks[i]);
+                return Instantiate(allBlocks[i]).Init();
             }
         }
         return null;
@@ -58,7 +58,7 @@ public class AddImages : MonoBehaviour
         {
             if (allBlocks[i].itemScriptble.GetCode() == block.itemScriptble.GetCode())
             {
-                return Instantiate(allBlocks[i]);
+                return Instantiate(allBlocks[i]).Init();
             }
         }
         return null;
@@ -76,4 +76,15 @@ public class AddImages : MonoBehaviour
         return null;
     }
 
+    public Item GetDataItem(_ITEMCODE code)
+    {
+        for (int i = 0; i < allItems.Length; i++)
+        {
+            if (allItems[i].scriptble.GetCode() == code)
+            {
+                return allItems[i];
+            }
+        }
+        return null;
+    }
 }

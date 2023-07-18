@@ -1,24 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class CraftingBox : MonoBehaviour
 {
-    //private ItemBox lastClickBox;
-    public ItemBox[] Boxes;
+    public ItemBox[] Boxes = new ItemBox[9];
     public ItemBox result;
     
     private AddImages addImages;
-
+    int index;
 
 
     void Start()
     {
         addImages = FindObjectOfType<AddImages>();
-
-
+        for(int i = 0; i < Boxes.Length; i++)
+        {
+            if (Boxes[i] != null)
+            {
+                Boxes[i].Init(null, FindObjectOfType<InventoryView>());
+                Boxes[i].put = true;
+                Boxes[i].SetPopD(Comparison);
+                Boxes[i].SetPutD(Comparison);
+            }
+        }
+        result.AddPoitnerDown(ItemActualization);
+        result.AddPoitnerDown(FinishComparison);
+        result.Init(null, FindObjectOfType<InventoryView>());
     }
 
 
@@ -27,12 +37,23 @@ public class CraftingBox : MonoBehaviour
         
     }
 
+    public void ItemActualization()
+    {
+        for (int i = 0; i < Combination.allRecipes[index].resultCount; i++)
+        {
+            result.ItemAdd(addImages.CreateItem(Combination.allRecipes[index].result));
+        }
+    }
 
     public void FinishComparison()
     {
         for (int i = 0; i < Boxes.Length; i++)
         {
-            Boxes[i].DeleteItems();
+            if (Boxes[i] != null)
+            {
+                Boxes[i].ItemDelete(1);
+                Boxes[i].Setting();
+            }
         }
 
     }
@@ -44,19 +65,22 @@ public class CraftingBox : MonoBehaviour
         List<_ITEMCODE> list = new List<_ITEMCODE>();
         for(int i = 0; i < Boxes.Length; i++)
         {
-            if (Boxes[i].GetItem() != null && !list.Contains(Boxes[i].GetItem().scriptble.GetCode()))
+            if (Boxes[i] != null)
             {
-                list.Add(Boxes[i].GetItem().scriptble.GetCode());
+                if (Boxes[i].GetCode() != _ITEMCODE.NONE && !list.Contains(Boxes[i].GetCode()))
+                {
+                    list.Add(Boxes[i].GetCode());
+                }
             }
         }
 
         for(int i = 0; i < Boxes.Length; i++)
         {
-            if (Boxes[i].GetItem() != null)
+            if (Boxes[i] != null && Boxes[i].GetCode() != _ITEMCODE.NONE)
             {
                 for(int j = 0; j < list.Count; j++)
                 {
-                    if (Boxes[i].GetItem().scriptble.GetCode() == list[j])
+                    if (Boxes[i].GetCode() == list[j])
                     {
                         recipe[i] = j + 1;
                         break;
@@ -67,6 +91,10 @@ public class CraftingBox : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                recipe[i] = 0;
+            }
         }
         //
 
@@ -75,20 +103,14 @@ public class CraftingBox : MonoBehaviour
         {
             if (Combination.allRecipes[i].Comparison(Combination.Cutting(recipe), list))
             {
-                List<Item> items = new List<Item>();
-
-                for(int j = 0; j < Combination.allRecipes[i].resultCount; j++)
-                {
-                    items.Add(addImages.CreateItem(Combination.allRecipes[i].result));
-                }
-               
-                result.SetItemList(items);
-                result._text.text = Combination.allRecipes[i].resultCount.ToString();
+                index = i;
+                result.SetView(addImages.GetDataItem(Combination.allRecipes[i].result), Combination.allRecipes[i].resultCount.ToString());
+                //result.Setting();
                 break;
             }
             else
             {
-                result.SetItemList(null);
+                result.OffView();
             }
         }
         //

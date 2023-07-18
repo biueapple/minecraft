@@ -1,157 +1,308 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Linq;
+using static UnityEditor.Progress;
 
-public class ItemBox : MonoBehaviour
+public class ItemBox : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField]
-    private List<Item> _item = new List<Item>();
-    public Text _text;
+    [SerializeField] 
+    public List<Item> _items = new List<Item>();
+    private Text text;
+    public ITEM_TYPE type;
+    public Action<EquipItem> equip = null;
+    public Action<EquipItem> litf = null;
+    public bool put;
+    private List<Action> popD = new List<Action>();
+    private List<Action> putD = new List<Action>();
 
-    void Start()
+    private List<Action> pointerDwon = new List<Action>();
+
+    private CharacterInven inventory;
+    private InventoryView inventoryView;
+
+    public void Init(CharacterInven inven, InventoryView view)
     {
-        
+        inventory = inven;
+        inventoryView = view;
+        text = transform.GetChild(0).GetComponent<Text>();
     }
 
-
-    void Update()
+    public void SetView(Item item, string count)
     {
-        
+        GetComponent<Image>().sprite = item.scriptble.GetSprite();
+        text.text = count;
+    }
+    public void OffView()
+    {
+        Setting();
     }
 
-    public void Visible(Transform par)
+    public void Visible()
     {
-        if (_item.Count > 0)
+        if(_items.Count > 0)
         {
-            _item[_item.Count - 1].gameObject.SetActive(true);
-            _item[_item.Count - 1].transform.SetParent(par, false);
-            _item[_item.Count - 1].transform.localPosition = Vector3.zero;
-            _item[_item.Count - 1].CollisionRemoval();
+            if(inventory != null)
+            {
+                _items[0].transform.SetParent(inventory.GetUnit().itemPosition, false);
+            }
+            else
+            {
+                _items[0].transform.SetParent(null, false);
+            }
+
+            _items[0].CollisionRemoval();
+            _items[0].transform.localEulerAngles = Vector3.zero;
+            _items[0].transform.localPosition = Vector3.zero;
+            _items[0].gameObject.SetActive(true);
         }
     }
 
     public void Invisible()
     {
-        if (_item.Count > 0)
-            _item[_item.Count - 1].gameObject.SetActive(false);
+        if (_items.Count > 0)
+        {
+            _items[0].gameObject.SetActive(false);
+        }
     }
 
-    public void DeleteItems()
+    public bool ItemAdd(Item item)
     {
-        for(int i = 0; i < _item.Count; i++)
+        if (Condition(item))
         {
-            Destroy(_item[i].gameObject);
+            _items.Add(item);
+
+            if (GetEquipItem() != null && equip != null)
+                equip(GetEquipItem());
+
+            ExPut();
+            return true;
         }
 
-        _item.Clear();
-
-        Setting();
-    }
-    public void ClearItems()
-    {
-        _item.Clear();
-        Setting();
-    }
-
-    public Item OneOut()
-    {
-        Item item = null;
-
-        if (_item.Count > 0)
-        {
-            item = _item[_item.Count - 1];
-            _item.RemoveAt(_item.Count - 1);
-        }
-
-        Setting();
-        item.gameObject.SetActive(true);
-        return item;
+        return false;
     }
 
-    public void OneIn(Item item)
+    public bool ItemsAdd(Item[] item)
     {
-        _item.Add(item);
-        item.gameObject.SetActive(false);
-        Setting();
+        if (Condition(item))
+        { 
+            _items.AddRange(item); 
+
+            if (GetEquipItem() != null && equip != null)
+                equip(GetEquipItem());
+
+            ExPut();
+            return true;
+        }
+        return false;
     }
 
-    public void SetItemList(List<Item> list)
+    public bool GetItemRemove(out Item item)
     {
-        if(list == null)
+        if (_items.Count == 0)
         {
-            DeleteItems();
+            item = null;
+            return false;
         }
-        else if(list.Count <= 0)         //리스트로 아무것도 안들어오면 사제 후 비우기
+
+        if (GetEquipItem() != null && litf != null)
+            litf(GetEquipItem());
+
+        item = _items[_items.Count - 1];
+        _items.RemoveAt(_items.Count - 1);
+
+        ExPop();
+        return true;
+    }
+
+    public bool GetItemsRemove(out Item[] items)
+    {
+        if (_items.Count == 0)
         {
-            DeleteItems();
+            items = null;
+            return false;
         }
-        else if(_item.Count <= 0)   //들어온 리스트가 있으면서 내가 아무것도 없을때 리스트 받고 상대껀 클리어
+
+        if (GetEquipItem() != null && litf != null)
         {
-            _item = list.ToList();
-            list.Clear();
+            litf(GetEquipItem());
         }
-        else if (list.Count > 0 && _item.Count > 0)     //나도 있고 상대도 있을때
+        items = _items.ToArray();
+        _items.Clear();
+
+
+        ExPop();
+
+        return true;
+    }
+
+    public void ItemDelete(int count = 0)
+    {
+        if(count == 0)
         {
-            if (list[0].scriptble.GetCode() == _item[0].scriptble.GetCode())    //근데 서로 같은 아이템임
+            for(int i = 0; i < _items.Count;)
             {
-                _item.AddRange(list);
-                list.Clear();
-            }
-            else //같은 아이템이 아님
-            {
-                List<Item> items = list.ToList();
-                list = _item.ToList();
-                _item = items.ToList();
+                if (GetEquipItem() != null && litf != null)
+                    litf(GetEquipItem());
+                Destroy(_items[_items.Count - 1].gameObject);
+                _items.RemoveAt(_items.Count - 1);
             }
         }
-        
-        Setting();
+        else
+        {
+            if(count > _items.Count)
+                count = _items.Count;
+            for(int i = 0; i < count; i++)
+            {
+                if (GetEquipItem() != null && litf != null)
+                    litf(GetEquipItem());
+                Destroy(_items[_items.Count - 1].gameObject);
+                _items.RemoveAt(_items.Count - 1);
+            }
+        }
+        ExPop();
     }
 
-    public List<Item> GetItemList()
+    private bool Condition(Item item)
     {
-        return _item;
+        if (item == null)
+            return false;
+        if (type != ITEM_TYPE.NONE && item.scriptble.GetItemType() != type)
+            return false;
+        if (_items.Count > 0)
+        {
+            if (_items[0].scriptble.GetBoxType() == ITEM_BOX_TYPE.UNDUPLICATE)
+                return false;
+            if (_items[0].scriptble.GetCode() != item.scriptble.GetCode())
+                return false;
+
+        }
+        return true;
+    }
+    private bool Condition(Item[] item)
+    {
+        if(!put)
+            return false;
+        if (item == null)
+            return false;
+        if (item.Length == 0)
+            return true;
+        if (type != ITEM_TYPE.NONE && item[0].scriptble.GetItemType() != type)
+            return false;
+        if (_items.Count > 0)
+        {
+            if (_items[0].scriptble.GetBoxType() == ITEM_BOX_TYPE.UNDUPLICATE)
+                return false;
+            if (_items[0].scriptble.GetCode() != item[0].scriptble.GetCode())
+                return false;
+        }
+        return true;
     }
 
+    public void ExPop()
+    {
+        Setting();
+        for (int i = 0; i < popD.Count; i++)
+        {
+            popD[i]();
+        }
+    }
+    public void ExPut()
+    {
+        Setting();
+        for (int i = 0; i <  putD.Count; i++)
+        {
+            putD[i]();
+        }
+    }
+    public void SetPopD(Action action)
+    {
+        popD.Add(action);
+    }
+    public void SetPutD(Action action)
+    {
+        putD.Add(action);
+    }
+    public int GetCount()
+    {
+        return _items.Count;
+    }
     public Item GetItem()
     {
-        if (_item.Count > 0)
+        if (_items.Count > 0) return _items[_items.Count - 1];
+        else return null;
+    }
+    public _ITEMCODE GetCode()
+    {
+        if (_items.Count > 0) return _items[0].scriptble.GetCode();
+        else return  _ITEMCODE.NONE;
+    }
+    public EquipItem GetEquipItem()
+    {
+        if (_items.Count == 1)
         {
-            return _item[0];
+            if (_items[0].GetComponent<EquipItem>() != null)
+            {
+                return _items[0].GetComponent<EquipItem>();
+            }
+        }
+        return null;
+    }
+    public void Setting()
+    {
+        if(GetCount() > 0)
+        {
+            GetComponent<Image>().sprite = GetItem().scriptble.GetSprite();
         }
         else
         {
-            return null;
+            GetComponent<Image>().sprite = null;
+        }
+        
+        if (GetCount() > 1)
+        {
+            text.text = GetCount().ToString();
+        }
+        else
+        {
+            text.text = "";
+        }
+    }
+    public void HandCheck()
+    {
+        if(this == inventory.GetHand())
+        {
+            Visible();
+        }
+        else
+        {
+            Invisible();
+        }
+    }
+    public string GetTextString() { return text.text; }
+
+    public void AddPoitnerDown(Action action)
+    {
+        pointerDwon.Add(action);
+    }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        for(int i = 0; i < pointerDwon.Count; i++)
+        {
+            pointerDwon[i]();
+        }
+        if (GetItem() != null)
+        {
+            if (inventoryView != null)
+            {
+                inventoryView.MouseDownItemBox(this);
+            }
         }
     }
 
-    public void Setting()
+    public void OnPointerUp(PointerEventData eventData)
     {
-        if(_item.Count > 0)
-        {
-            SetSprite(_item[0].scriptble.GetSprite());
-        }
-        else
-        {
-            SetSprite(null);
-        }
-        SetText();
-    }
-    private void SetSprite(Sprite sprite)
-    {
-        GetComponent<Image>().sprite = sprite;
-    }
-    private void SetText()
-    {
-        if(_item.Count <= 1)
-        {
-            _text.text = "";
-        }
-        else
-        {
-            _text.text = _item.Count.ToString();
-        }
+
     }
 }

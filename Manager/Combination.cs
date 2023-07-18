@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using System.IO;
 
 public enum _ITEMCODE
 {
@@ -15,6 +13,8 @@ public enum _ITEMCODE
     CRAFTINGBOX,
     LEAF,
     WATER,
+    WOODEN_STICK,
+    WOODEN_SWORD,
 
 }
 
@@ -36,6 +36,8 @@ public static class Combination
         allRecipes.Add(new Soil_Recipe());
         allRecipes.Add(new Plank_Recipe());
         allRecipes.Add(new CraftingBox_Recipe());
+        allRecipes.Add(new Wooden_Stick_Recipe());
+        allRecipes.Add(new Wooden_Sword_Recipe());
     }
 
 
@@ -63,7 +65,7 @@ public static class Combination
 
         for (int i = i1; i <= i2; i++)
         {
-            s += ints[i];
+            s += ints[i].ToString();
         }
 
         if (s.Equals(""))
@@ -112,8 +114,6 @@ public class Recipe
                 return false;
             }
         }
-
-
 
         if (hash == h)
         {
@@ -189,6 +189,55 @@ public class CraftingBox_Recipe : Recipe
 
         hash = Combination.Cutting(recipe);
 
+        codes.Add(_ITEMCODE.PLANK);
+
+        codes.Sort();
+    }
+}
+
+public class Wooden_Stick_Recipe : Recipe
+{
+    public Wooden_Stick_Recipe()
+    {
+        result = _ITEMCODE.WOODEN_STICK;
+        resultCount = 4;
+
+        int[] ints =
+        {
+            1,0,0,
+            1,0,0,
+            0,0,0
+        };
+
+        recipe = ints;
+
+        hash = Combination.Cutting(recipe);
+
+        codes.Add(_ITEMCODE.PLANK);
+
+        codes.Sort();
+    }
+}
+
+public class Wooden_Sword_Recipe : Recipe
+{
+    public Wooden_Sword_Recipe()
+    {
+        result = _ITEMCODE.WOODEN_SWORD;
+        resultCount = 1;
+
+        int[] ints =
+        {
+            0,1,0,
+            0,1,0,
+            0,2,0
+        };
+
+        recipe = ints;
+
+        hash = Combination.Cutting(recipe);
+
+        codes.Add(_ITEMCODE.WOODEN_STICK);
         codes.Add(_ITEMCODE.PLANK);
 
         codes.Sort();
