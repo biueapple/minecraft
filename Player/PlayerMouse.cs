@@ -34,13 +34,13 @@ public class PlayerMouse : MonoBehaviour
     {
         if(isMove)
         {
-            m_Horizontal = Input.GetAxisRaw("Mouse X") * mouse_Horizontal_Sensitive;
+            m_Horizontal += Input.GetAxisRaw("Mouse X") * mouse_Horizontal_Sensitive;
 
 
             m_Vertical += Input.GetAxisRaw("Mouse Y") * mouse_Vertical_Sensitive;
 
 
-            tf.eulerAngles += new Vector3(0, m_Horizontal, 0);
+            tf.eulerAngles = new Vector3(0, m_Horizontal, 0);
 
 
             if (m_Vertical > verticalMaxLimit)
@@ -56,4 +56,13 @@ public class PlayerMouse : MonoBehaviour
         }
     }
 
+
+    public float GetHorizontal()
+    {
+        return m_Horizontal;
+    }
+    public float GetVertical()
+    {
+        return -m_Vertical;
+    }
 }

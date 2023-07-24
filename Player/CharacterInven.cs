@@ -15,7 +15,7 @@ public class CharacterInven : MonoBehaviour
     private CharacterEquip equip;
     
     protected ItemBox invenHand;
-    protected Unit user;
+    protected Character user;
 
 
     public void Init()
@@ -30,7 +30,7 @@ public class CharacterInven : MonoBehaviour
         }
         equip = GetComponent<CharacterEquip>();
         equip.Init();
-        user = GetComponent<Unit>();
+        user = GetComponent<Character>();
         invenHand = itemBoxes[0];
     }
 
@@ -264,5 +264,5 @@ public class CharacterInven : MonoBehaviour
 
     public InventoryView GetInventoryView() { return inventoryView; }
     public ItemBox GetHand() { return invenHand; }
-    public Unit GetUnit() { return user; }
+    public Character GetUnit() { return user; }
 }

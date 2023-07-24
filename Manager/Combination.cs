@@ -15,6 +15,8 @@ public enum _ITEMCODE
     WATER,
     WOODEN_STICK,
     WOODEN_SWORD,
+    WOODEN_PICKAX,
+    STOVE,
 
 }
 
@@ -33,11 +35,11 @@ public static class Combination
     
     public static void init()
     {
-        allRecipes.Add(new Soil_Recipe());
         allRecipes.Add(new Plank_Recipe());
         allRecipes.Add(new CraftingBox_Recipe());
         allRecipes.Add(new Wooden_Stick_Recipe());
         allRecipes.Add(new Wooden_Sword_Recipe());
+        allRecipes.Add(new Wooden_Pickax_Recipe());
     }
 
 
@@ -121,29 +123,6 @@ public class Recipe
         }
 
         return false;
-    }
-}
-
-public class Soil_Recipe : Recipe
-{
-    public Soil_Recipe()
-    {
-        result = _ITEMCODE.SOIL;
-        resultCount = 4;
-
-        int[] ints =
-        {
-            1,1,0,
-            1,1,0,
-            0,0,0
-        };
-
-        recipe = ints;
-
-        hash = Combination.Cutting(recipe); // 1 1 0 1 1로 변환        1 1 0    0 1 1      0 0 0
-        codes.Add(_ITEMCODE.SOIL);          // 1이 무슨 아이템인지      1 1 0    0 1 1      1 1 0
-                                            //                         0 0 0    0 0 0      1 1 0    다 같은 1 1 0 1 1
-        codes.Sort();                       
     }
 }
 
@@ -239,6 +218,55 @@ public class Wooden_Sword_Recipe : Recipe
 
         codes.Add(_ITEMCODE.WOODEN_STICK);
         codes.Add(_ITEMCODE.PLANK);
+
+        codes.Sort();
+    }
+}
+
+public class Wooden_Pickax_Recipe : Recipe
+{
+    public Wooden_Pickax_Recipe()
+    {
+        result = _ITEMCODE.WOODEN_PICKAX;
+        resultCount = 1;
+
+        int[] ints =
+        {
+            1,1,1,
+            0,2,0,
+            0,2,0
+        };
+
+        recipe = ints;
+
+        hash = Combination.Cutting(recipe);
+
+        codes.Add(_ITEMCODE.WOODEN_STICK);
+        codes.Add(_ITEMCODE.PLANK);
+
+        codes.Sort();
+    }
+}
+
+public class Stove : Recipe
+{
+    public Stove()
+    {
+        result = _ITEMCODE.STOVE;
+        resultCount = 1;
+
+        int[] ints =
+        {
+            1,1,1,
+            1,0,1,
+            1,1,1
+        };
+
+        recipe = ints;
+
+        hash = Combination.Cutting(recipe);
+
+        codes.Add(_ITEMCODE.STONE);
 
         codes.Sort();
     }

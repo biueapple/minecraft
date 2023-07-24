@@ -5,14 +5,14 @@ using static UnityEditor.Progress;
 
 public class CharacterEquip : MonoBehaviour
 {
-    private Unit user;
+    private Character user;
     public ItemBox[] itemBoxes;
     public Text statText;
     private Stat stat;
 
     public void Init()
     {
-        user = GetComponent<Unit>();
+        user = GetComponent<Character>();
         stat = GetComponent<Stat>();
         for (int i = 0; i < itemBoxes.Length; i++)
         {
@@ -31,7 +31,7 @@ public class CharacterEquip : MonoBehaviour
             {
                 if (itemBoxes[i]._items.Count > 0)
                 {
-                    return itemBoxes[i].GetComponent<EquipItem>();
+                    return itemBoxes[i]._items[0].GetComponent<EquipItem>();
                 }
                 break;
             }

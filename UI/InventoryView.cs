@@ -13,7 +13,6 @@ public class InventoryView : MonoBehaviour
     public Image[] hotkeys;
     Coroutine coroutine = null;
 
-
     public void Init()
     {
         uiManager = FindObjectOfType<UIManager>();

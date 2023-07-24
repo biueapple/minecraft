@@ -18,22 +18,6 @@ public enum ITEM_TYPE
 
 }
 
-public enum DAMAGE_TYPE
-{
-    TRUE,
-    AD,
-    AP,
-
-}
-
-public enum ITEM_RATING
-{
-    COMMON,
-    UNCOMMON,
-    REAR,
-
-}
-
 [CreateAssetMenu(fileName = "itemData", menuName = "ScriptableObj/CreateItem", order = int.MaxValue)]
 [System.Serializable]
 public class ItemScriptble : ScriptableObject
@@ -55,6 +39,13 @@ public class ItemScriptble : ScriptableObject
     }
 
     //
+
+    [SerializeField]
+    private int strength;       //°­µµ
+    public int GetStrength()
+    {
+        return strength;
+    }
 
     [SerializeField]
     private Sprite itemSprite;

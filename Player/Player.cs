@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
 
     public Transform head;
 
-    public Unit character;
+    public Character character;
 
     //
     protected Decryption decryption;
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
 
         Ready(true);
 
-        character.Init();
+        character.Init(this);
     }
 
 
@@ -84,13 +84,19 @@ public class Player : MonoBehaviour
             }
             else
             {
-
+                Attack();
+                HoykeySkill();
             }
         }
-
     }
 
-
+    public void Attack()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            character.Attack();
+        }
+    }
     
     public void OpenInventoryKey()
     {
@@ -334,39 +340,39 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            //character.GetSkillUI().hotkeys[0].GetSkill().Single_Effect();
+            character.SkillUse(0);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            //character.GetSkillUI().hotkeys[1].GetSkill().Single_Effect();
+            character.SkillUse(1);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            //character.GetSkillUI().hotkeys[2].GetSkill().Single_Effect();
+            character.SkillUse(2);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            //character.GetSkillUI().hotkeys[3].GetSkill().Single_Effect();
+            character.SkillUse(3);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            //character.GetSkillUI().hotkeys[4].GetSkill().Single_Effect();
+            character.SkillUse(4);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            //character.GetSkillUI().hotkeys[5].GetSkill().Single_Effect();
+            character.SkillUse(5);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha7))
         {
-            //character.GetSkillUI().hotkeys[6].GetSkill().Single_Effect();
+            character.SkillUse(6);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha8))
         {
-            //character.GetSkillUI().hotkeys[7].GetSkill().Single_Effect();
+            character.SkillUse(7);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha9))
         {
-            //character.GetSkillUI().hotkeys[8].GetSkill().Single_Effect();
+            character.SkillUse(8);
         }
     }
 
@@ -390,4 +396,5 @@ public class Player : MonoBehaviour
 
 
     public PlayerMouse GetPlayerMouse() {  return  playerMouse; }
+    public Ray GetRay() { return ray; }
 }

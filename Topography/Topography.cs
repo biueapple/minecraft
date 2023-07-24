@@ -197,7 +197,7 @@ public class Topography : MonoBehaviour
             }
         }
 
-        //StartCoroutine(CreateDownTo());
+        StartCoroutine(CreateDownTo());
     }
 
     private IEnumerator CreateDownTo()
@@ -233,13 +233,10 @@ public class Topography : MonoBehaviour
                             blocks[i, k, j] = b;
 
                             blocks[i, k, j].isVisible = false;
-                            //blocks[i, k, j].SetBlockTexturePath("Tex/s_k_i_n");   //블럭 텍스쳐 바꾸는 방법
-                            //blocks[i, k, j].ApplyBlockTexture();                  //블럭 텍스쳐 바꾸는 방법
                             blocks[i, k, j].SetInvisible();
                         }
                     }
-
-                    if (blocks[i, k, j] != null && topY == -1)      //흙인가
+                    else if (blocks[i, k, j] != null && blocks[i, k, j].itemScriptble.GetCode() == _ITEMCODE.GRASS && topY == -1)      //흙인가
                     {
                         topY = k;
                     }

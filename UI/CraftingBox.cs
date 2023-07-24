@@ -10,7 +10,7 @@ public class CraftingBox : MonoBehaviour
     public ItemBox result;
     
     private AddImages addImages;
-    int index;
+    int index = -1;
 
 
     void Start()
@@ -39,10 +39,13 @@ public class CraftingBox : MonoBehaviour
 
     public void ItemActualization()
     {
+        if (index == -1)
+            return;
         for (int i = 0; i < Combination.allRecipes[index].resultCount; i++)
         {
             result.ItemAdd(addImages.CreateItem(Combination.allRecipes[index].result));
         }
+        index = -1;
     }
 
     public void FinishComparison()
@@ -55,7 +58,7 @@ public class CraftingBox : MonoBehaviour
                 Boxes[i].Setting();
             }
         }
-
+        
     }
 
     public void Comparison()

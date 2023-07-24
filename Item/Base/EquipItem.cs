@@ -1,19 +1,19 @@
 using UnityEngine;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class EquipItem : Item
 {
     //공격이 마법인지 물리인지 정하고
     //
     protected Stat stat;
-    public int level;
     public float damage;
-    public ITEM_RATING rating;
-    public DAMAGE_TYPE d_Type;
     public float range;
+    public Transform user;
 
-    public Collider[] Damage_Coll(Vector3 posi)
+    public Collider[] Damage_Coll(Transform use)
     {
-        return Physics.OverlapBox(posi + new Vector3(0, 0, range * 0.5f), new Vector3(1, 1, range));
+        user = use;
+        return Physics.OverlapBox((use.position + use.forward)/* * (range * 0.5f)*/, new Vector3(1, 1, range));
     }
 
     public override Item Init()
@@ -27,7 +27,10 @@ public class EquipItem : Item
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position + new Vector3(0, 0, 1 * 0.5f), new Vector3(0.5f, 0.5f, 0.5f));
+        if(user != null)
+        {
+            Gizmos.DrawWireCube((user.position + user.forward)/* * (0.5f * range)*/, new Vector3(0.5f, 0.5f, range * 0.5f));
+        }
     }
 }
 
