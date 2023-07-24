@@ -10,8 +10,9 @@ public class Skill : MonoBehaviour
     public int level;       //스킬 레벨
     public int maxLevel;
     public Sprite sp = null;
-
-    
+    protected Character user;
+    public float interval;
+    protected float timer;
     
     public void LevelUp()
     {
@@ -23,13 +24,41 @@ public class Skill : MonoBehaviour
         level--;
     }
 
-    public void Projective_Skill(Unit target, Action<Unit> action, float speed, Projective projective)
+    public virtual bool Use(Character user, Unit target)
     {
-        projective.MoveToUnit(target, action, speed);
+        this.user = user;
+        if (timer <= 0)
+            return true;
+        return false;
+    }
+
+    public virtual void Effect(Unit unit, Transform tf)
+    {
+
+    }
+
+    public void Projective_Skill(Unit user,float range, Vector3 angle, Action<Unit, Transform> action, float speed, Projective projective)
+    {
+        projective.MoveToUnit(user, range, angle, action, speed);
     }
 
     public void Single_Effect(Unit target, float figure)
     {
         
+    }
+
+    protected IEnumerator CoolTimeLate()
+    {
+        while(timer > 0)
+        {
+            timer -= Time.deltaTime / interval;
+
+            yield return null;
+        }
+    }
+
+    public float GetTimer()
+    {
+        return timer;
     }
 }

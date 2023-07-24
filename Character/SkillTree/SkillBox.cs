@@ -5,6 +5,20 @@ using UnityEngine.UI;
 public class SkillBox : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     Skill skill;
+    Image timer;
+
+    private void Start()
+    {
+        timer = transform.GetChild(0).GetComponent<Image>();
+    }
+
+    private void Update()
+    {
+        if(skill != null)
+        { 
+            timer.fillAmount = skill.GetTimer();
+        }
+    }
 
     public void SetSkill(Skill s)
     {

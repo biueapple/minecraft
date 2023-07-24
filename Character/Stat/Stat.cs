@@ -8,7 +8,7 @@ public class Stat : MonoBehaviour
 {
     private Unit user;
     //체력
-    private float hp;
+    public float hp;
     private float maxHp;
     //체력 자연 회복량
     private float naturalHP;
@@ -18,7 +18,9 @@ public class Stat : MonoBehaviour
     private float defence;
     private float resistance;
     private float ad;
+    public float GetAd() { return ad; }
     private float ap;
+    public float GetAp() { return ap; }
     private float speed;
     //
     public float originalHP;
@@ -107,7 +109,8 @@ public class Stat : MonoBehaviour
     }
 
     public void MinusHp(float figure)
-    { 
+    {
+        Debug.Log($"대미지 {figure} 받음");
         hp -= figure;
         if(nrhp == null )
         {

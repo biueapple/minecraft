@@ -5,16 +5,21 @@ using UnityEngine;
 
 public class Projective : MonoBehaviour
 {
-    private Unit unit;
-    private Action<Unit> action;
+    private Unit user;
+    private float range;
+    private Vector3 startpoint;
+    private Action<Unit, Transform> action;
     private Coroutine coroutine;
     private float speed;
 
-    public void MoveToUnit(Unit target, Action<Unit> action, float speed)
+    public void MoveToUnit(Unit user, float range, Vector3 angle, Action<Unit, Transform> action, float speed)
     {
-        unit = target;
+        this.user = user;
+        this.range = range;
         this.action = action;
         this.speed = speed;
+        startpoint = transform.position = user.transform.position + user.transform.forward;
+        transform.localEulerAngles = angle;
         if(coroutine != null )
         {
             StopCoroutine(coroutine);
@@ -24,14 +29,9 @@ public class Projective : MonoBehaviour
 
     private IEnumerator MoveTo()
     {
-        while(unit != null)
+        while(Vector3.Distance(startpoint, transform.position) <= range)
         {
-            transform.position = Vector3.MoveTowards(transform.position, unit.transform.position, speed * Time.deltaTime);
-
-            if(!unit.gameObject.activeSelf)
-            {
-                break;
-            }
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, speed * Time.deltaTime);
 
             yield return null;
         }
@@ -41,12 +41,12 @@ public class Projective : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.transform.GetComponent<Unit>() != null &&  other.transform.GetComponent<Unit>() == unit)
+        if(other.transform.GetComponent<Unit>() != null &&  other.transform.GetComponent<Unit>() != user)
         {
             if (coroutine != null)
             {
                 StopCoroutine(coroutine);
-                action(unit);
+                action(other.transform.GetComponent<Unit>(), transform);
                 Destroy(gameObject);
             }
         }

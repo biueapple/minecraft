@@ -44,7 +44,7 @@ public class SolidBlock : Block
         else
         {
             //손에 뭘 들고있다면 장비인지 장비의 강도가 얼마인지 파악하고 해야하는데 아직 장비를 안만들었으니 
-            durability = (durability + (1 + 1) * Time.deltaTime);
+            durability = (durability + (1 + item.scriptble.GetStrength()) * Time.deltaTime);
             GetComponent<Renderer>().material.SetFloat("_Float", durability / blockScriptble.GetStrength() - 0.6f );
         }
         //else if (item.scriptble.GetStrength() >= itemScriptble.GetStrength())
